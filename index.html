@@ -3,208 +3,364 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Partner Treat</title>
+<title>Partner Treat Pro</title>
 
 <style>
-:root{
-  --primary:#3b82f6;
-  --card:#0f172a;
+:root {
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --success: #10b981;
+  --danger: #ef4444;
+  --bg-dark: #020617;
+  --card-bg: rgba(15, 23, 42, 0.55);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --item-bg: rgba(255, 255, 255, 0.03);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
 }
 
 /* RESET */
-*{
-  box-sizing:border-box;
+* {
+  box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
-  color:white;
-  min-height:100vh;
+body {
+  margin: 0;
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  background: var(--bg-dark);
 }
 
-/* 🔥 GRADIENT ĐỘNG */
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:linear-gradient(120deg,#020617,#1e293b,#020617);
-  background-size:200% 200%;
-  animation:bgMove 8s ease infinite;
-  z-index:-1;
+/* 🔥 AMBIENT BACKGROUND */
+.ambient-bg {
+  position: fixed; inset: 0; z-index: -2; overflow: hidden;
 }
-@keyframes bgMove{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+.blob {
+  position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.5;
+  animation: float 12s infinite alternate ease-in-out;
+}
+.blob-1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: #1e1b4b; }
+.blob-2 { bottom: -10%; right: -10%; width: 70vw; height: 70vw; background: #0f172a; animation-delay: -5s; }
+.blob-3 { top: 40%; left: 30%; width: 50vw; height: 50vw; background: #172554; animation-delay: -2s; opacity: 0.4; }
+
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(30px, -50px) scale(1.1); }
 }
 
 /* LAYOUT */
-.container{
-  max-width:420px;
-  margin:auto;
-  padding:20px;
+.container {
+  width: 100%; max-width: 440px; margin: 0 auto; padding: 24px 16px;
+  display: flex; flex-direction: column; flex: 1; position: relative; z-index: 1;
 }
 
-/* CARD */
-.card{
-  background:rgba(15,23,42,0.85);
-  backdrop-filter:blur(20px);
-  border-radius:24px;
-  padding:20px;
-  margin-top:20px;
-  box-shadow:0 25px 60px rgba(0,0,0,0.5);
-  opacity:0;
-  transform:translateY(10px);
-  transition:.35s;
+/* CARD GLASSMORPHISM */
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+  border: 1px solid var(--card-border);
+  border-radius: 28px; padding: 32px 24px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+  opacity: 0; transform: translateY(20px) scale(0.98);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex; flex-direction: column; gap: 20px;
 }
-.card.show{
-  opacity:1;
-  transform:translateY(0);
+.card.show { opacity: 1; transform: translateY(0) scale(1); }
+
+.header-group { text-align: center; }
+.title { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
+
+/* BADGE & PROGRESS */
+.stats { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.remain {
+  display: inline-block; font-size: 13px; font-weight: 600; color: var(--text-main);
+  background: rgba(255, 255, 255, 0.1); padding: 6px 14px; border-radius: 20px;
+}
+.progress-bar {
+  width: 100%; max-width: 200px; height: 6px; background: rgba(255,255,255,0.1);
+  border-radius: 10px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; background: var(--primary); border-radius: 10px;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.title{
-  font-size:20px;
-  font-weight:700;
+/* INPUTS */
+textarea {
+  width: 100%; height: 120px; padding: 16px; border-radius: 16px;
+  background: rgba(0,0,0,0.3); border: 1px solid var(--card-border);
+  color: white; font-size: 15px; resize: none; transition: 0.3s;
 }
-
-/* REMAIN */
-.remain{
-  font-size:13px;
-  opacity:0.7;
-  margin-top:6px;
-}
+textarea:focus { outline: none; border-color: var(--primary); background: rgba(0,0,0,0.5); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
 
 /* KEYPAD */
-.pinDots{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  margin:20px 0;
+.pinDots { display: flex; justify-content: center; gap: 16px; margin: 10px 0 24px; }
+.dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.1);
+  transition: all 0.25s ease;
 }
-.dot{
-  width:12px;height:12px;
-  border-radius:50%;
-  background:#1e293b;
+.dot.active {
+  background: var(--primary); border-color: var(--primary);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.6); transform: scale(1.15);
 }
-.dot.active{background:#3b82f6}
-
-.keypad{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
+.pinDots.error .dot {
+  background: var(--danger); border-color: var(--danger);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
 }
-.key{
-  background:#1e293b;
-  padding:16px;
-  border-radius:16px;
-  text-align:center;
-  font-size:18px;
-}
-.key:active{transform:scale(0.9)}
-
-/* BUTTON */
-button{
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:14px;
-  margin-top:12px;
-  background:var(--primary);
-  color:white;
+.shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+@keyframes shake {
+  10%, 90% { transform: translate3d(-2px, 0, 0); }
+  20%, 80% { transform: translate3d(4px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+  40%, 60% { transform: translate3d(6px, 0, 0); }
 }
 
-/* LIST */
-.item{
-  background:var(--card);
-  border-radius:16px;
-  padding:14px;
-  margin-top:12px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; max-width: 280px; margin: 0 auto; }
+.key {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+  height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 26px; font-weight: 500; cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+.key:active { transform: scale(0.85); background: rgba(255,255,255,0.1); }
+.key.action-key { font-size: 22px; background: transparent; border: none; }
+
+/* BUTTONS */
+button {
+  width: 100%; padding: 16px; border: none; border-radius: 16px;
+  background: var(--primary); color: white; font-size: 16px; font-weight: 600;
+  cursor: pointer; transition: 0.2s; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25);
+  display: flex; justify-content: center; align-items: center; gap: 8px;
+}
+button:active { transform: scale(0.96); }
+.btn-secondary { background: rgba(255,255,255,0.08); box-shadow: none; color: var(--text-main); }
+.btn-secondary:active { background: rgba(255,255,255,0.15); }
+.btn-danger { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+
+/* LIST & ITEMS */
+#list {
+  display: flex; flex-direction: column; gap: 12px;
+  max-height: 52vh; overflow-y: auto; padding-right: 4px; scroll-behavior: smooth;
+}
+#list::-webkit-scrollbar { width: 4px; }
+#list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+
+.item {
+  background: var(--item-bg); border: 1px solid var(--card-border);
+  border-radius: 18px; padding: 16px; display: flex; justify-content: space-between;
+  align-items: center; transition: all 0.3s ease;
 }
 
-/* 🔥 ĐÃ DÙNG */
-.item.used{
-  background:linear-gradient(135deg,#065f46,#022c22);
-  box-shadow:0 0 12px rgba(34,197,94,0.5);
+.code-text {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 16px; font-weight: 600; letter-spacing: 1.5px; transition: 0.3s;
 }
 
-.blur{filter:blur(6px)}
+.blur { filter: blur(6px); opacity: 0.4; user-select: none; }
 
-.actions{display:flex;gap:8px}
+/* 🔥 ĐÃ DÙNG STATE */
+.item.used {
+  background: rgba(16, 185, 129, 0.03); border-color: rgba(16, 185, 129, 0.15); opacity: 0.5;
+}
+.item.used .code-text { text-decoration: line-through; color: var(--text-muted); }
 
-.icon{
-  width:34px;height:34px;
-  background:#1e293b;
-  border-radius:10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+/* ACTIONS IN LIST */
+.actions { display: flex; gap: 8px; align-items: center; }
+.icon-btn {
+  width: 38px; height: 38px; background: rgba(255,255,255,0.05);
+  border-radius: 12px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: 0.2s;
+}
+.icon-btn:active { transform: scale(0.85); background: rgba(255,255,255,0.1); }
+.icon-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.use-btn {
+  background: var(--primary); padding: 0 16px; height: 38px;
+  border-radius: 12px; font-size: 14px; font-weight: 600;
+  display: flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s;
+}
+.use-btn:active { transform: scale(0.92); }
+.use-btn svg { width: 15px; height: 15px; }
+
+.item.used .use-btn {
+  background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted);
 }
 
-.use{
-  background:var(--primary);
-  padding:6px 10px;
-  border-radius:10px;
-  font-size:12px;
+.footer { text-align: center; font-size: 13px; color: var(--text-muted); margin-top: auto; padding-top: 30px; }
+.hidden { display: none !important; }
+
+/* 🔥 TOAST NOTIFICATIONS */
+#toast-container {
+  position: fixed; top: 20px; left: 0; right: 0; display: flex; flex-direction: column;
+  align-items: center; gap: 10px; z-index: 9999; pointer-events: none;
+}
+.toast {
+  background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px);
+  border: 1px solid var(--card-border); color: white; padding: 12px 24px;
+  border-radius: 100px; font-size: 14px; font-weight: 500;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  animation: toastIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(-20px) scale(0.9); }
 }
 
-.footer{
-  text-align:center;
-  font-size:12px;
-  opacity:.5;
-  margin-top:20px;
+/* 🔥 CUSTOM MODALS */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+  z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px;
+  opacity: 0; visibility: hidden; transition: 0.3s;
 }
+.modal-overlay.active { opacity: 1; visibility: visible; }
+.modal-content {
+  background: rgba(15, 23, 42, 0.85); border: 1px solid var(--card-border);
+  border-radius: 24px; padding: 24px; width: 100%; max-width: 360px;
+  transform: translateY(20px) scale(0.95); transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+}
+.modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
+.modal-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; text-align: center; }
+.modal-actions { display: flex; gap: 12px; margin-top: 20px; }
+.modal-actions button { flex: 1; padding: 14px; font-size: 15px; }
 
-.hidden{display:none}
+/* SVG Icons String */
 </style>
 </head>
 
 <body>
 
+<div class="ambient-bg">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<div id="toast-container"></div>
+
 <div class="container">
 
 <!-- SETUP -->
-<div class="card" id="setup">
-  <div class="title">Nhập mã tháng</div>
-  <textarea id="codes" style="width:100%;padding:12px;border-radius:12px;background:#1e293b;color:white;font-size:16px"></textarea>
-  <button onclick="save()">Lưu mã</button>
+<div class="card hidden" id="setup">
+  <div class="header-group">
+    <div class="title">Thiết lập hệ thống</div>
+    <div class="text-muted" style="font-size:14px">Nhập danh sách mã của tháng này</div>
+  </div>
+  <textarea id="codes" placeholder="Mỗi dòng 1 mã..."></textarea>
+  <button onclick="saveInitial()">Lưu thiết lập</button>
 </div>
 
 <!-- LOGIN -->
 <div class="card hidden" id="login">
-  <div class="title">Nhập PIN</div>
+  <div class="header-group">
+    <div class="title">Xác thực</div>
+    <div class="text-muted" style="font-size:14px">Nhập mã PIN để truy cập</div>
+  </div>
+  
   <div class="pinDots" id="dots"></div>
 
   <div class="keypad">
     <div class="key">1</div><div class="key">2</div><div class="key">3</div>
     <div class="key">4</div><div class="key">5</div><div class="key">6</div>
     <div class="key">7</div><div class="key">8</div><div class="key">9</div>
-    <div class="key">⌫</div><div class="key">0</div><div class="key">✔</div>
+    <div class="key action-key">⌫</div><div class="key">0</div><div class="key action-key">✔</div>
   </div>
 </div>
 
 <!-- APP -->
 <div class="card hidden" id="app">
-  <div class="title">Partner Treat</div>
-  <div id="remain" class="remain"></div>
+  <div class="header-group">
+    <div class="title">Partner Treat</div>
+    <div class="stats">
+      <div id="remain" class="remain"></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+  </div>
 
   <div id="list"></div>
 
-  <button onclick="reset()">Reset</button>
-  <button onclick="addMore()">+ Thêm mã</button>
+  <div style="display:flex; gap:12px; margin-top: 10px;">
+    <button class="btn-secondary" onclick="openResetModal()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
+    </button>
+    <button onclick="openAddModal()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      Thêm mã
+    </button>
+  </div>
 </div>
 
-<div class="footer">© DangTung</div>
+<div class="footer">© DangTung Pro</div>
 
+</div>
+
+<!-- MODAL THÊM MÃ -->
+<div id="add-modal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-title">Thêm mã mới</div>
+    <textarea id="new-codes-input" placeholder="Dán mã vào đây, cách nhau bởi khoảng trắng, phẩy hoặc xuống dòng..." style="height: 100px;"></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('add-modal')">Hủy</button>
+      <button onclick="confirmAdd()">Thêm</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RESET -->
+<div id="reset-modal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-title">Làm mới dữ liệu?</div>
+    <div style="text-align: center; color: var(--text-muted); font-size: 14px;">Hành động này sẽ xóa toàn bộ mã và cài đặt lại từ đầu. Bạn có chắc chắn?</div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('reset-modal')">Hủy</button>
+      <button class="btn-danger" onclick="confirmReset()" style="background: var(--danger); color: white;">Xóa dữ liệu</button>
+    </div>
+  </div>
 </div>
 
 <script>
 const KEY="APP_FINAL";
 let pinInput="";
+
+// SVG Icons
+const icons = {
+  eye: `<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`,
+  eyeOff: `<svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`,
+  check: `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+  undo: `<svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>`
+};
+
+/* TOAST SYSTEM */
+function showToast(msg) {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = msg;
+  container.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.style.animation = 'toastOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+    setTimeout(() => toast.remove(), 400);
+  }, 2500);
+}
+
+/* MODAL SYSTEM */
+function openAddModal() {
+  document.getElementById('new-codes-input').value = "";
+  document.getElementById('add-modal').classList.add('active');
+}
+function openResetModal() { document.getElementById('reset-modal').classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
 /* INIT */
 function init(){
@@ -228,26 +384,18 @@ function show(id){
 
   const el=document.getElementById(id);
   el.classList.remove("hidden");
-
-  setTimeout(()=>el.classList.add("show"),10);
+  setTimeout(()=>el.classList.add("show"), 20);
 }
 
-/* SAVE */
-function save(){
+/* SAVE INITIAL */
+function saveInitial(){
   const raw=document.getElementById("codes").value.trim();
-  if(!raw) return alert("Nhập mã");
+  if(!raw) return showToast("Vui lòng nhập ít nhất 1 mã!");
 
-  const codes=raw.split("\n")
-    .map(x=>x.trim())
-    .filter(Boolean)
-    .map(x=>({code:x,used:false,show:false}));
+  const codes=raw.split("\n").map(x=>x.trim()).filter(Boolean).map(x=>({code:x,used:false,show:false}));
 
-  localStorage.setItem(KEY,JSON.stringify({
-    pin:"2005",
-    codes,
-    month:new Date().getMonth()
-  }));
-
+  localStorage.setItem(KEY,JSON.stringify({ pin:"2005", codes, month:new Date().getMonth() }));
+  showToast("Đã lưu thiết lập");
   show("login");
   renderDots();
 }
@@ -256,6 +404,7 @@ function save(){
 function renderDots(){
   const box=document.getElementById("dots");
   box.innerHTML="";
+  box.className = "pinDots"; // reset error class
   for(let i=0;i<4;i++){
     const d=document.createElement("div");
     d.className="dot"+(i<pinInput.length?" active":"");
@@ -266,13 +415,12 @@ function renderDots(){
 document.querySelectorAll(".key").forEach(k=>{
   k.onclick=()=>{
     const val=k.textContent;
-
     if(val==="⌫") pinInput=pinInput.slice(0,-1);
     else if(val==="✔") checkPin();
     else if(pinInput.length<4) pinInput+=val;
 
     renderDots();
-    if(pinInput.length===4) checkPin();
+    if(pinInput.length===4) setTimeout(checkPin, 150);
   };
 });
 
@@ -282,88 +430,92 @@ function checkPin(){
     render();
     show("app");
   }else{
-    alert("Sai PIN");
-    pinInput="";
-    renderDots();
+    const box=document.getElementById("dots");
+    box.classList.add("error", "shake");
+    if(navigator.vibrate) navigator.vibrate([50, 50, 50]); // Haptic feedback
+    setTimeout(() => {
+      pinInput="";
+      renderDots();
+    }, 400); // Đợi chạy xong animation shake
   }
 }
 
-/* LIST */
+/* LIST RENDER */
 function render(){
   const data=JSON.parse(localStorage.getItem(KEY));
   const list=document.getElementById("list");
   list.innerHTML="";
 
   let remain=0;
+  let total=data.codes.length;
 
-  data.codes.forEach(c=>{
+  data.codes.forEach((c, index)=>{
     if(!c.used) remain++;
 
     const item=document.createElement("div");
     item.className="item"+(c.used?" used":"");
+    item.style.animationDelay = `${index * 0.05}s`; // Stagger effect
 
     const code=document.createElement("div");
-    code.className=c.show?"":"blur";
+    code.className="code-text " + (c.show?"":"blur");
     code.textContent=c.code;
 
     const actions=document.createElement("div");
     actions.className="actions";
 
     const eye=document.createElement("div");
-    eye.className="icon";
-    eye.textContent=c.show?"🙈":"👁";
-
-    eye.onclick=()=>{
+    eye.className="icon-btn";
+    eye.innerHTML = c.show ? icons.eyeOff : icons.eye;
+    eye.onclick=()=> {
       c.show=!c.show;
       localStorage.setItem(KEY,JSON.stringify(data));
       render();
     };
 
     const use=document.createElement("div");
-    use.className="use";
-    use.textContent=c.used?"Đã dùng":"Dùng";
-
-    use.onclick=()=>{
+    use.className="use-btn";
+    use.innerHTML = c.used ? `${icons.undo} Hoàn tác` : `${icons.check} Dùng`;
+    use.onclick=()=> {
       c.used=!c.used;
+      if(c.used) showToast("Đã đánh dấu sử dụng");
       localStorage.setItem(KEY,JSON.stringify(data));
       render();
     };
 
-    actions.appendChild(eye);
-    actions.appendChild(use);
-
-    item.appendChild(code);
-    item.appendChild(actions);
+    actions.appendChild(eye); actions.appendChild(use);
+    item.appendChild(code); item.appendChild(actions);
     list.appendChild(item);
   });
 
-  document.getElementById("remain").textContent=`Còn ${remain} mã`;
+  // Update Stats
+  document.getElementById("remain").textContent=`Sẵn sàng: ${remain} / ${total} mã`;
+  const percent = total === 0 ? 0 : ((total - remain) / total) * 100;
+  document.getElementById("progress-fill").style.width = `${percent}%`;
 }
 
-/* ADD */
-function addMore(){
-  const input=prompt("Nhập mã (mỗi dòng 1 mã):");
-  if(!input) return;
+/* ADD MORE (Từ Modal) */
+function confirmAdd(){
+  const input = document.getElementById("new-codes-input").value;
+  if(!input.trim()) return closeModal('add-modal');
 
   const data=JSON.parse(localStorage.getItem(KEY));
-
-  input.split("\n")
-    .map(x=>x.trim())
-    .filter(Boolean)
-    .forEach(x=>{
-      data.codes.push({code:x,used:false,show:false});
-    });
+  const newCodes = input.replace(/,/g, '\n').replace(/ /g, '\n').split("\n")
+    .map(x=>x.trim()).filter(Boolean);
+    
+  newCodes.forEach(x=>{
+    data.codes.push({code:x,used:false,show:false});
+  });
 
   localStorage.setItem(KEY,JSON.stringify(data));
+  closeModal('add-modal');
+  showToast(`Đã thêm ${newCodes.length} mã mới`);
   render();
 }
 
-/* RESET */
-function reset(){
-  if(confirm("Reset toàn bộ?")){
-    localStorage.removeItem(KEY);
-    location.reload();
-  }
+/* RESET (Từ Modal) */
+function confirmReset(){
+  localStorage.removeItem(KEY);
+  location.reload();
 }
 
 init();
